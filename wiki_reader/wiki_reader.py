@@ -5,18 +5,21 @@ import re
 
 
 def clean_text(text):
-    text = remove_refs(text)
+    """Clean the text and return it in a more readable format"""
     text = remove_end_sections(text)
+    text = remove_images(text)
+    text = remove_refs(text)
     return text
 
 
 def remove_end_sections(text):
-    # Removes all sections after See also or References
+    """Remove all text following 'See also' or 'References' sections"""
     clipIndex = text.rfind('==See also==')
     clipIndex = clipIndex if clipIndex != -1 else text.rfind('==References==')
     return text[:clipIndex] if clipIndex != -1 else text
 
 def remove_refs(text):
+    """Remove all in-text references"""
     return re.sub('\<ref\>.*?\<\/ref\>', '', text)
 
 
