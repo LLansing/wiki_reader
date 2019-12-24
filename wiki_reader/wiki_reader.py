@@ -26,7 +26,8 @@ def remove_images(text):
 
 def remove_refs(text):
     """Remove all in-text references"""
-    return re.sub('\<ref\>.*?\<\/ref\>', '', text)
+    temp = re.sub('\<ref.*?\<\/ref\>', '', text)
+    return re.sub('\<ref.*?>', '', temp)
 
 
 if __name__ == "__main__":
