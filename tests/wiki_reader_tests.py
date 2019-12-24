@@ -24,6 +24,11 @@ def test_remove_end_sections():
     for (before, after) in zip(test_strings_before, test_strings_after):
         assert_equal(wiki_reader.wiki_reader.remove_end_sections(before), after)
 
+def test_remove_images():
+    test_string_before = 'Get out of my swamp!\n[[Image: Shrek yelling]]And this should be removed.\nBut...[[Image]] shouldn\'t'
+    test_string_after = 'Get out of my swamp!\n\nBut...[[Image]] shouldn\'t'
+    assert_equal(wiki_reader.wiki_reader.remove_images(test_string_before), test_string_after)
+
 def teardown():
     print 'TEAR DOWN!'
 

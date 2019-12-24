@@ -18,6 +18,12 @@ def remove_end_sections(text):
     clipIndex = clipIndex if clipIndex != -1 else text.rfind('==References==')
     return text[:clipIndex] if clipIndex != -1 else text
 
+def remove_images(text):
+    """Remove Images and their associated text"""
+    drop = re.sub('^\[\[Image.*$','', text, flags=re.MULTILINE)
+    print drop
+    return drop
+
 def remove_refs(text):
     """Remove all in-text references"""
     return re.sub('\<ref\>.*?\<\/ref\>', '', text)
@@ -41,5 +47,4 @@ if __name__ == "__main__":
     f.write(text.encode('utf8'))
     f.close()
 
-    print text
 
