@@ -3,14 +3,21 @@ from sys import argv
 from mwclient import *
 import re
 
+CURLY_WORDS = [
+        'Citation',
+        'see also',
+        'Relevance',
+        'cn'
+    ]
 
 def clean_text(text):
     """Clean the text and return it in a more readable format"""
     text = remove_end_sections(text)
     text = remove_images(text)
     text = remove_refs(text)
+    text = remove_links(text)
+    text = remove_curlies(text)
     return text
-
 
 def remove_end_sections(text):
     """Remove all text following 'See also' or 'References' sections"""
@@ -21,7 +28,6 @@ def remove_end_sections(text):
 def remove_images(text):
     """Remove Images and their associated text"""
     drop = re.sub('^\[\[Image.*$','', text, flags=re.MULTILINE)
-    print drop
     return drop
 
 def remove_refs(text):
@@ -29,6 +35,17 @@ def remove_refs(text):
     temp = re.sub('\<ref.*?\<\/ref\>', '', text)
     return re.sub('\<ref.*?>', '', temp)
 
+def remove_links(text):
+    """Reformat the in-text links"""
+    temp = re.sub('\[\[[^\]]*?\|(.*?)\]\]', '\g<1>', text)
+    return re.sub('\[\[(.*?)\]\]', '\g<1>', temp)
+
+def remove_curlies(text):
+    """Remove the curly braces containing 'Citation needed', etc.
+       The first words in the braces to be removed are kept in the CURLY_WORDS list"""
+    words = '|'.join(CURLY_WORDS)   
+    return re.sub('\{\{(%s).*?\}\}' % words, '', text)
+    
 
 if __name__ == "__main__":
     script, page_title = argv
