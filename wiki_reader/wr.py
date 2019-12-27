@@ -3,6 +3,7 @@ from sys import argv
 from mwclient import *
 import re
 
+
 CURLY_WORDS = [
         'Citation',
         'see also',
@@ -10,14 +11,21 @@ CURLY_WORDS = [
         'cn'
     ]
 
+
 def clean_text(text):
     """Clean the text and return it in a more readable format"""
+    text = remove_preamble(text)
     text = remove_end_sections(text)
     text = remove_images(text)
     text = remove_refs(text)
     text = remove_links(text)
     text = remove_curlies(text)
     return text
+
+def remove_preamble(text):
+    """Remove anything preceding the first text paragraph
+       This includes infoboxes that appear near the top of the page"""
+    return text[text.find("'''"):]
 
 def remove_end_sections(text):
     """Remove all text following 'See also' or 'References' sections"""
@@ -26,8 +34,8 @@ def remove_end_sections(text):
     return text[:clipIndex] if clipIndex != -1 else text
 
 def remove_images(text):
-    """Remove Images and their associated text"""
-    drop = re.sub('^\[\[Image.*$','', text, flags=re.MULTILINE)
+    """Remove Images or files and their associated text"""
+    drop = re.sub('^\[\[(Image|File).*$','', text, flags=re.MULTILINE)
     return drop
 
 def remove_refs(text):
@@ -61,7 +69,7 @@ if __name__ == "__main__":
     text = clean_text(text)
 
     # write output to file
-    f = open('temp_output.txt', 'w+')
+    f = open('%s.txt' % page_title, 'w+')
     f.write(text.encode('utf8'))
     f.close()
 
